@@ -2,11 +2,17 @@ FROM python:3.12-rc-slim
 
 WORKDIR /app
 
-COPY ./src /app/src
 COPY requirements.txt /app
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./src /app/src
+
+# Flask config – set env vars instead of using `export`
+ENV FLASK_APP=src/app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_PORT=5000
 
 EXPOSE 5000
 
-CMD [ "export", "FLASK_APP=src/app.py", "&&", "flask", "run"]
+CMD ["flask", "run"]
